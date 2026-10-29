@@ -1,0 +1,5 @@
+/packages/
+/src/
+/pkg/
+Tern-*.tar.gz
+*.pkg.tar.*

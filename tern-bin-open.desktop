@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Tern (open file)
+Comment=Open files in a new tab of the running Tern
+Exec=/usr/lib/tern-bin/tern-open-focus %F
+TryExec=tern
+MimeType=text/plain;text/markdown;text/x-source;image/png;image/jpeg;image/gif;image/webp;image/svg+xml;application/vnd.sqlite3;application/x-sqlite3;application/x-sqbpro;application/x-ipynb+json;
+Icon=utilities-terminal
+Terminal=false
+Categories=Utility;TextEditor;

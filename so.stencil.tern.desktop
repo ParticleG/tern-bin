@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Tern
+Comment=Multiplexing terminal (closed beta)
+Exec=tern
+TryExec=tern
+Icon=utilities-terminal
+StartupWMClass=so.stencil.tern
+Terminal=false
+Categories=System;TerminalEmulator;
+Keywords=terminal;shell;
+X-TerminalArgExec=-e

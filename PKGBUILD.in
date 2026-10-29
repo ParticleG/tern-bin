@@ -1,0 +1,77 @@
+pkgname=tern-bin
+pkgver=@VERSION@
+pkgrel=@PKGREL@
+pkgdesc='Native multiplexing terminal for panes, files and remote sessions (closed beta)'
+arch=('x86_64')
+url='https://stencil.so/tern'
+license=('LicenseRef-Proprietary')
+depends=(
+  'desktop-file-utils'
+  'git'
+  'glibc'
+  'gtk-update-icon-cache'
+  'hicolor-icon-theme'
+  'libgcc'
+  'libglvnd'
+  'libsecret'
+  'libstdc++'
+  'libxkbcommon'
+  'vulkan-icd-loader'
+  'vulkan-driver'
+  'wayland'
+  'xdg-utils'
+)
+optdepends=(
+  'niri: raise the Tern window after opening files from a file manager'
+  'jq: find the Tern window to raise on niri'
+)
+provides=("tern=${pkgver}")
+conflicts=('tern')
+options=('!strip' '!debug')
+source=(
+  "Tern-${pkgver}-linux-x86_64.tar.gz"
+  'so.stencil.tern.desktop'
+  'so.stencil.tern.open.desktop'
+  'tern-bin-open.desktop'
+  'tern-open-focus'
+)
+sha256sums=(
+  '@ARCHIVE_SHA256@'
+  '@DESKTOP_SHA256@'
+  '@OPEN_DESKTOP_SHA256@'
+  '@OPEN_TAB_DESKTOP_SHA256@'
+  '@OPEN_FOCUS_SHA256@'
+)
+
+check() {
+  if [[ ! -f "$srcdir/tern/tern" || ! -x "$srcdir/tern/tern" ||
+        -L "$srcdir/tern/tern" || -L "$srcdir/tern" ]]; then
+    printf 'Expected a regular executable at tern/tern in the tarball.\n' >&2
+    return 1
+  fi
+
+  desktop-file-validate "$srcdir/so.stencil.tern.desktop" \
+    "$srcdir/so.stencil.tern.open.desktop" \
+    "$srcdir/tern-bin-open.desktop" || return
+  sh -n "$srcdir/tern-open-focus" || return
+
+  local version_output
+  version_output=$("$srcdir/tern/tern" --version) || return
+  if [[ $version_output != "tern $pkgver "* ]]; then
+    printf 'Expected Tern %s, got: %s\n' "$pkgver" "$version_output" >&2
+    return 1
+  fi
+  printf 'Verified %s\n' "$version_output"
+}
+
+package() {
+  install -Dm755 "$srcdir/tern/tern" "$pkgdir/usr/bin/tern"
+  install -Dm644 "$srcdir/so.stencil.tern.desktop" \
+    "$pkgdir/usr/share/applications/so.stencil.tern.desktop"
+  install -Dm644 "$srcdir/so.stencil.tern.open.desktop" \
+    "$pkgdir/usr/share/applications/so.stencil.tern.open.desktop"
+  install -Dm644 "$srcdir/tern-bin-open.desktop" \
+    "$pkgdir/usr/share/applications/tern-bin-open.desktop"
+  install -Dm755 "$srcdir/tern-open-focus" \
+    "$pkgdir/usr/lib/tern-bin/tern-open-focus"
+}
